@@ -194,28 +194,10 @@ public:
                 delay(1000);
             }
 
-            if (xpos == 41)
-            {
-                ESP_LOGD("RFsomfy.h", "List Files");
-                String str = "";
-                SPIFFS.begin();
-                Dir dir = SPIFFS.openDir("/");
-                while (dir.next())
-                {
-                    str += dir.fileName();
-                    str += " / ";
-                    str += dir.fileSize();
-                    str += "\r\n";
-                }
-                Serial.print(str);
-                ESP_LOGD("RFsomfy.h", string2char(str));
-                SPIFFS.end();
-            }
-
             if (xpos == 61)
             {
                 ESP_LOGD("RFsomfy.h", "61 mode");
-                
+
                 bool success = SPIFFS.begin();
                 if(success) {
                     ESP_LOGW("RFsomfy.h", "Begin success");
