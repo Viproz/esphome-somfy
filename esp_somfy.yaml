@@ -11,6 +11,7 @@ esphome:
     - SomfyRts.cpp
   libraries:
     - FS
+    - SmartRC-CC1101-Driver-Lib
     
 #  libraries:
 #    - Ticker

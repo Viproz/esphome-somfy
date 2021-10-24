@@ -5,6 +5,12 @@ using namespace esphome;
 #include <FS.h>
 #include <SPIFFS.h>
 
+#define CC1101
+
+#ifdef CC1101
+    #include <ELECHOUSE_CC1101_SRC_DRV.h>
+#endif
+
 // cmd 11 - program mode
 // cmd 16 - porgram mode for grail curtains
 // cmd 21 - delete rolling code file
@@ -15,8 +21,8 @@ using namespace esphome;
 // cmd 81 - Get all rolling code
 // cmd 85 - Write new rolling codes
 
-#define STATUS_LED_PIN 2
-#define REMOTE_TX_PIN 22
+#define STATUS_LED_PIN 22
+#define REMOTE_TX_PIN 2
 #define REMOTE_FIRST_ADDR 0x121311 // Starting number for remote indexes
 
 
@@ -100,6 +106,11 @@ public:
         
 
         digitalWrite(STATUS_LED_PIN, LOW);
+
+        #ifdef CC1101
+            ELECHOUSE_cc1101.Init();
+            ELECHOUSE_cc1101.setMHZ(433.42);
+        #endif
     }
 
     // delete rolling code . 0....n
@@ -144,18 +155,42 @@ public:
             if (ppos == 0) {
                 ESP_LOGD("RFsomfy.h", "POS 0");
                 Serial.println("* Command Down");
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.SetTx();
+                #endif
+
                 rtsDevice->sendCommandDown();
+                
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.setSidle();
+                #endif
                 pos = 0.01;
             } else if (ppos == 100) {
                 ESP_LOGD("RFsomfy.h", "POS 100");
                 Serial.println("* Command UP");
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.SetTx();
+                #endif
+
                 rtsDevice->sendCommandUp();
+                
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.setSidle();
+                #endif
                 pos = 0.99;
             } else {
                 // In between position, set it to saved position
                 ESP_LOGD("RFsomfy.h", "POS 50");
                 Serial.println("* Command MY");
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.SetTx();
+                #endif
+
                 rtsDevice->sendCommandStop();
+                
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.setSidle();
+                #endif
                 pos = 0.5;
             }
 
@@ -165,7 +200,15 @@ public:
         } else if (call.get_stop()) {
             // User requested cover stop
             ESP_LOGD("RFsomfy", "get_stop");
+            #ifdef CC1101
+                ELECHOUSE_cc1101.SetTx();
+            #endif
+
             rtsDevice->sendCommandStop();
+            
+            #ifdef CC1101
+                ELECHOUSE_cc1101.setSidle();
+            #endif
         } else if (call.get_tilt().has_value()) {
             // Tilt is only for debug/programation
             auto tpos = *call.get_tilt();
@@ -176,14 +219,30 @@ public:
             {
                 ESP_LOGD("RFsomfy.h", "program mode");
                 digitalWrite(STATUS_LED_PIN, HIGH);
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.SetTx();
+                #endif
+
                 rtsDevice->sendCommandProg();
+                
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.setSidle();
+                #endif
                 delay(1000);
             }
             if (xpos == 16)
             {
                 ESP_LOGD("RFsomfy.h", "program mode - grail");
                 digitalWrite(STATUS_LED_PIN, HIGH);
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.SetTx();
+                #endif
+
                 rtsDevice->sendCommandProgGrail();
+                
+                #ifdef CC1101
+                    ELECHOUSE_cc1101.setSidle();
+                #endif
                 delay(1000);
             }
             if (xpos == 21)
