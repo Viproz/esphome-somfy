@@ -198,7 +198,8 @@ public:
             {
                 ESP_LOGD("RFsomfy.h", "61 mode");
 
-                bool success = SPIFFS.begin();
+                // Begin and try to format on fail
+                bool success = SPIFFS.begin(true);
                 if(success) {
                     ESP_LOGW("RFsomfy.h", "Begin success");
                 } else {
