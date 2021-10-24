@@ -9,6 +9,8 @@ esphome:
     - RFsomfy.h
     - SomfyRts.h
     - SomfyRts.cpp
+  libraries:
+    - FS
     
 #  libraries:
 #    - Ticker
@@ -49,8 +51,9 @@ cover:
     int blindNumber = 5;
 
     for(int i = 0 ; i < blindNumber ; ++i) {
-      covers.push_back(new RFsomfy(i));
-      App.register_component(covers[i]);
+      auto newComp = new RFsomfy(i);
+      App.register_component(newComp);
+      covers.push_back(newComp);
     }
 
     // In case the rolling codes get messed up you can reset them here
@@ -74,4 +77,3 @@ cover:
     - name: "Office window shutter"
       device_class: shutter
       id: somfy4
-      

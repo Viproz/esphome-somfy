@@ -1,5 +1,6 @@
 #include "SomfyRts.h"
 #include <FS.h>
+#include <SPIFFS.h>
 
 SomfyRts::SomfyRts(uint32_t remoteID, bool debug) {
     _debug = debug;
@@ -216,7 +217,7 @@ void SomfyRts::_writeRemoteRollingCode(uint16_t code) {
 }
 
 String SomfyRts::_getConfigFilename() {
-  String path = "/data/remote/";
+  String path = "data_remote_";
   path += _remoteId;
   path += ".txt";
   return path;
