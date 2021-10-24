@@ -1,8 +1,8 @@
-#include "esphome.h"
+#include <esphome.h>
 using namespace esphome;
 #include "SomfyRts.h"
 #include <Ticker.h>
-#include "FS.h"
+#include <FS.h>
 
 // cmd 11 - program mode
 // cmd 16 - porgram mode for grail curtains
