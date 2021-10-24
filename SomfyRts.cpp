@@ -217,7 +217,7 @@ void SomfyRts::_writeRemoteRollingCode(uint16_t code) {
 }
 
 String SomfyRts::_getConfigFilename() {
-  String path = "data_remote_";
+  String path = "/data_remote_";
   path += _remoteId;
   path += ".txt";
   return path;

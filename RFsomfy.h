@@ -32,7 +32,7 @@ char* const string2char(String command)
 
 String file_path(int remoteId)
 {
-    String path = "data_remote_";
+    String path = "/data_remote_";
     path += remoteId;
     path += ".txt";
     return path;
@@ -206,13 +206,13 @@ public:
                     ESP_LOGW("RFsomfy.h", "Begin fail");
                 }
 
-                if (!SPIFFS.exists("formatComplete.txt"))
+                if (!SPIFFS.exists("/formatComplete.txt"))
                 {
-                    Serial.println("Please wait 30 secs for SPIFFS to be formatted");
-                    ESP_LOGW("RFsomfy.h", "Please wait 30 s");
+                    // Serial.println("Please wait 30 secs for SPIFFS to be formatted");
+                    // ESP_LOGW("RFsomfy.h", "Please wait 30 s");
 
-                    success = SPIFFS.format();
-                    delay(30000);
+                    // success = SPIFFS.format();
+                    // delay(30000);
 
                     if(success) {
                         ESP_LOGW("RFsomfy.h", "Spiffs formatted");
@@ -220,13 +220,15 @@ public:
                         ESP_LOGW("RFsomfy.h", "Error while Spiffs formatting");
                     }
 
-                    File f = SPIFFS.open("formatComplete.txt", "w");
+                    File f = SPIFFS.open("/formatComplete.txt", "w");
                     if (!f) {
                         ESP_LOGW("RFsomfy.h", "file open failed");
                     } else {
                         f.println("Format Complete");
                         ESP_LOGW("RFsomfy.h", "Format Complete");
                     }
+                    f.close();
+
                 } else {
                     ESP_LOGW("RFsomfy.h", "SPIFFS is formatted. Moving along...");
                 }
