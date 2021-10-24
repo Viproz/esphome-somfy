@@ -45,41 +45,33 @@ cover:
 - platform: custom
   lambda: |-
     std::vector<Cover *> covers;
-    auto rfSomfy0 = new RFsomfy(0);
-    rfSomfy0->set_code(50);
-    App.register_component(rfSomfy0);
-    auto rfSomfy1 = new RFsomfy(1);
-    rfSomfy1->set_code(100);  // Set initial rolling code. After it works, remove this line.
-    App.register_component(rfSomfy1);
-    auto rfSomfy2 = new RFsomfy(2);
-    App.register_component(rfSomfy2);
-    covers.push_back(rfSomfy0);
-    covers.push_back(rfSomfy1);
-    covers.push_back(rfSomfy2);
+
+    int blindNumber = 5;
+
+    for(int i = 0 ; i < blindNumber ; ++i) {
+      covers.push_back(new RFsomfy(i));
+      App.register_component(covers[i]);
+    }
+
+    // In case the rolling codes get messed up you can reset them here
+    //covers[0]->set_code(50);
+    
     return {covers};
 
   covers:
-    - name: "Blind 2"
-      device_class: shade
+    - name: "Living room shutter"
+      device_class: shutter
       id: somfy0
-    - name: "Veneziana casal"
+    - name: "Kitchen shutter"
       device_class: shutter
       id: somfy1
-    - name: "Veneziana roxo"
+    - name: "Chamber shutter"
       device_class: shutter
       id: somfy2
-
-text_sensor:
-  - platform: version
-    name: "RFsomfy version"
-  - platform: custom
-    lambda: |-
-      auto rfSomfyInfo = new RFsomfyInfo();
-      App.register_component(rfSomfyInfo);
-      return {rfSomfyInfo};
-    text_sensors:
-      name: "RFsomfy info"
-    
-binary_sensor:
-  - platform: status
-    name: "RFsomfy status"
+    - name: "Office shutter"
+      device_class: shutter
+      id: somfy3
+    - name: "Office window shutter"
+      device_class: shutter
+      id: somfy4
+      

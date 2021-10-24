@@ -15,13 +15,7 @@ void SomfyRts::init() {
   pinMode(REMOTE_TX_PIN, OUTPUT);
   digitalWrite(REMOTE_TX_PIN, LOW);
 
-  rollingCode = _readRemoteRollingCode();
-  if (rollingCode == 0 ) {
-    // Make rolling code set to work.
-    if (rollingCode < newRollingCode) {
-      _writeRemoteRollingCode(newRollingCode);
-    }
-  }
+  uint16_t rollingCode = _readRemoteRollingCode();
 
   if (Serial) {
       Serial.print("Simulated remote number : "); Serial.println(_remoteId, HEX);
@@ -195,13 +189,11 @@ uint16_t SomfyRts::_readRemoteRollingCode() {
       String line = f.readStringUntil('\n');
       code = line.toInt();
       f.close();
-    }
-    else {
+    } else {
       Serial.println("File open failed");
     }
   }
-  // mudar
-  // if (_remoteId==1184513) code=0;
+  
   SPIFFS.end();
   return code;
 }
@@ -227,6 +219,5 @@ String SomfyRts::_getConfigFilename() {
   String path = "/data/remote/";
   path += _remoteId;
   path += ".txt";
-  Serial.println(path);
   return path;
 }
