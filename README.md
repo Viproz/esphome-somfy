@@ -2,19 +2,13 @@
 Esphome configuration for Somfy Blind
 
 
-
-<a href="https://www.buymeacoffee.com/dmslabs"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a pizza&emoji=🍕&slug=dmslabs&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a>
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9S3JYKPHR3XQ6)
-[![Donate with Bitcoin](https://en.cryptobadges.io/badge/micro/1MAC9RBnPYT9ua1zsgvhwfRoASTBKr4QL8)](https://www.blockchain.com/btc/address/1MAC9RBnPYT9ua1zsgvhwfRoASTBKr4QL8)
-
-<img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/dmslabsbr/esphome-somfy">
-<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/dmslabsbr/esphome-somfy">
+<img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/Viproz/esphome-somfy">
+<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Viproz/esphome-somfy">
 
 
 
 
-This project still has bugs and is not optimized for use. So, you may have a little trouble using it.
+This project is ready to use!
 
 __Materials:__
 * 1 - [Wemos D1](https://s.click.aliexpress.com/e/_d8jADk8);
@@ -64,16 +58,6 @@ __Software:__
 
 4. Customize your ESPHome device, changing `esp_somfy.yaml` as you need.
 
-`````
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_pass
-  use_address: 192.168.50.12
-  manual_ip:
-    static_ip: 192.168.50.12
-    gateway: 192.168.50.1
-    subnet: 255.255.255.0
-`````
 Change here according to the amount of blinds you have.
 ```
 cover:
@@ -104,10 +88,6 @@ cover:
       device_class: shutter
       id: somfy2
 ```
-
-**ATTENTION**
-
-You do not need to use this line `rfSomfy0->set_code(1);` , only if you need to manually set the first code.
 
 5. Compile and Upload customized ESPhome to your device.
 
