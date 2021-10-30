@@ -270,7 +270,7 @@ public:
                     // Serial.println("Please wait 30 secs for SPIFFS to be formatted");
                     // ESP_LOGW("RFsomfy.h", "Please wait 30 s");
 
-                    // success = SPIFFS.format();
+                    // success = SPIFFS.format(); // This seems to bug out and badly format the space
                     // delay(30000);
 
                     if(success) {

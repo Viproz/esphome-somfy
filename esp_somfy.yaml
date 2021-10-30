@@ -1,48 +1,19 @@
 esphome:
-  name: esp_somfy
-  platform: ESP8266
-  board: d1_mini_lite
-  
-  arduino_version: espressif8266@2.3.2
+  name: Shutters
+  platform: ESP32
+  board: esp32dev
   
   includes:
-    - RFsomfy.h
-    - SomfyRts.h
-    - SomfyRts.cpp
+    - esphome-somfy/RFsomfy.h
+    - esphome-somfy/SomfyRts.h
+    - esphome-somfy/SomfyRts.cpp
   libraries:
     - FS
-    - SmartRC-CC1101-Driver-Lib
-    
-#  libraries:
-#    - Ticker
+    - SPIFFS
+    - https://github.com/Viproz/SmartRC-CC1101-Driver-Lib
+    - SPI
 
-  comment: versao 2 - 10/abr/2020
-
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_pass
-  use_address: 192.168.50.12
-  manual_ip:
-    static_ip: 192.168.50.12
-    gateway: 192.168.50.1
-    subnet: 255.255.255.0
-
-web_server:
-  port: 80
-
-# Enable logging
-logger:
-  level: DEBUG
-  esp8266_store_log_strings_in_flash: False
-  baud_rate: 115200
-
-
-api:
-  password: !secret api_pass
-
-ota:
-  password: !secret ota_pass
-
+# Add all your normal items
 
 cover:
 - platform: custom

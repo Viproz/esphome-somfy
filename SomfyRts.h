@@ -10,7 +10,7 @@
 
 #ifdef REMOTE_TX_PIN
 #else
- #define REMOTE_TX_PIN 22
+ #define REMOTE_TX_PIN 2
 #endif
 
 class SomfyRts {
