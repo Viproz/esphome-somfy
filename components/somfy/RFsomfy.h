@@ -1,15 +1,12 @@
 #include "esphome.h"
-using namespace esphome;
 #include "SomfyRts.h"
 #include <Arduino.h>
 #include <FS.h>
 #include <SPIFFS.h>
+#include <ELECHOUSE_CC1101_SRC_DRV.h>
 
-#define CC1101
-
-#ifdef CC1101
-    #include <ELECHOUSE_CC1101_SRC_DRV.h>
-#endif
+namespace esphome {
+namespace somfy {
 
 // cmd 11 - program mode
 // cmd 16 - porgram mode for grail curtains
@@ -33,7 +30,7 @@ char* const string2char(String command)
         char *p = const_cast<char *>(command.c_str());
         return p;
     }
-    return "";
+    return const_cast<char *>("");
 }
 
 String file_path(int remoteId)
@@ -64,7 +61,7 @@ void writeCode2file(int remoteId, uint16_t code)
     SPIFFS.end();
 }
 
-class RFsomfy : public Component, public Cover
+class RFsomfy : public Component, public cover::Cover
 {
 
 private:
@@ -74,25 +71,23 @@ private:
     SomfyRts* rtsDevice;
 
 public:
-
-
-    RFsomfy(int rmx) : Cover()
-    { //register
-        index = rmx;
-        remoteId = REMOTE_FIRST_ADDR + index;
-
-        rtsDevice = new SomfyRts(remoteId);
-
-        ESP_LOGD("RFsomfy.h", "Cover %d", index);
-    }
-
     void set_code(const uint16_t code)
     {
         writeCode2file(remoteId, code);
     }
 
+    void setCoverID(int coverID)
+    {
+        index = coverID;
+        remoteId = REMOTE_FIRST_ADDR + coverID;
+    }
+
     void setup() override
     {
+        rtsDevice = new SomfyRts(remoteId);
+
+        ESP_LOGD("RFsomfy.h", "Cover %d", index);
+
         // This will be called by App.setup()
         ESP_LOGD("RFsomfy.h", "Starting Device");
         Serial.begin(115200);
@@ -125,16 +120,16 @@ public:
         SPIFFS.end();
     }
 
-    CoverTraits get_traits() override
+    cover::CoverTraits get_traits() override
     {
-        auto traits = CoverTraits();
+        auto traits = cover::CoverTraits();
         traits.set_is_assumed_state(false);
         traits.set_supports_position(true);
         traits.set_supports_tilt(true); // to send other commands
         return traits;
     }
 
-    void control(const CoverCall &call) override
+    void control(const cover::CoverCall &call) override
     {
         // This will be called every time the user requests a state change.
 
@@ -302,3 +297,5 @@ public:
     }
 };
 
+}  // namespace somfy
+}  // namespace esphome
