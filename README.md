@@ -1,14 +1,11 @@
 # esphome-somfy
-Esphome configuration for Somfy Blind
+Esphome configuration for Somfy RTS Blinds
+
+:warning: **This repository will not work with Somfy IO devices, only with RTS devices.** :warning:
+
+<img alt="Contributors" src="https://img.shields.io/github/contributors/Viproz/esphome-somfy"> <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Viproz/esphome-somfy">
 
 
-<img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/Viproz/esphome-somfy">
-<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Viproz/esphome-somfy">
-
-
-
-
-This project is ready to use!
 
 __Materials:__
 * 1 - [Wemos Mini D1](https://www.aliexpress.com/item/1005005972627549.html);
