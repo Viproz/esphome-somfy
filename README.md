@@ -18,7 +18,17 @@ __Software:__
 * Running Home Assistant [https://www.home-assistant.io/]
 * ESPhome component [https://esphome.io/]
 
-![scheme](/img/esquema.png)
+Using some cables or a PCB board connect the CC1101 to the ESP32 with the following pins:
+| CC1101 Pin | ESP32 Pin | Name   |
+|------------|-----------|--------|
+| 1          | GND       | Ground |
+| 2          | 3.3V      | Power  |
+| 3          | IO2       | GD00   |
+| 4          | IO5       | CSN    |
+| 5          | IO18      | SCK    |
+| 6          | IO23      | MOSI   |
+| 7          | IO19      | MISO   |
+| 8          | IO4       | GD02   |
 
 ## Usage:
 
@@ -66,7 +76,7 @@ Discover the new esp32 board in Home Assistant and insert your new entities in y
 
 ![Blind control interface](/img/Blind%20control.png)
 
-3. Slide the bar that controls the tilt position to the value 61, this will prepare the SPIFSS memory.
+3. If this if the first cover you are programming, slide the bar that controls the tilt position to the value 61, this will prepare the SPIFSS memory.
 4. Put your blind in programming mode. If necessary, consult the blind manual or the manufacturer, it usually consist in pressing the button on the back of the existing remote or power cycling the device if no remote exists.
 5. Slide the bar that controls the tilt position to the value 11, this makes the virtual remote enter programming mode.
 
