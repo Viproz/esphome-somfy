@@ -1,5 +1,7 @@
 #pragma once
-#include "esphome.h"
+#include "esphome/core/component.h"
+#include "esphome/core/log.h"
+#include "esphome/components/cover/cover.h"
 #include "SomfyRts.h"
 #include <Arduino.h>
 #include <FS.h>
