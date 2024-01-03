@@ -93,6 +93,7 @@ public:
         auto traits = cover::CoverTraits();
         traits.set_is_assumed_state(false);
         traits.set_supports_position(true);
+        traits.set_supports_stop(true); // Middle button of the remote
         traits.set_supports_tilt(true); // to send other commands
         return traits;
     }
