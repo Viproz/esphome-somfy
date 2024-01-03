@@ -8,7 +8,7 @@ from esphome.const import (
 CONF_REMOTEID_KEY = 'RemoteID'
 
 somfy_ns = cg.esphome_ns.namespace("somfy")
-SomfyCover = somfy_ns.class_("RFsomfy", cover.Cover, cg.Component)
+SomfyCover = somfy_ns.class_("SomfyCover", cover.Cover, cg.Component)
 
 CONFIG_SCHEMA = cover.COVER_SCHEMA.extend(
     {

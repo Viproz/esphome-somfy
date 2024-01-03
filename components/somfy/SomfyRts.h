@@ -8,14 +8,12 @@
 #define BAS 0x4
 #define PROG 0x8
 
-#ifdef REMOTE_TX_PIN
-#else
- #define REMOTE_TX_PIN 2
+#ifndef REMOTE_TX_PIN
+#define REMOTE_TX_PIN 2
 #endif
 
 class SomfyRts {
-
-  private:
+private:
     bool _debug;
     uint32_t _remoteId;
     unsigned char _frame[7];
@@ -24,7 +22,7 @@ class SomfyRts {
     void _writeRemoteRollingCode(uint16_t code);
     String _getConfigFilename();
 
-  public:
+public:
     SomfyRts(uint32_t remoteID, bool debug);
     SomfyRts(uint32_t remoteID);
     void init();
@@ -33,8 +31,8 @@ class SomfyRts {
     void sendCommandStop();
     void sendCommandProg();
     void sendCommandProgGrail();
-    void buildFrame(unsigned char *frame, unsigned char button);
-    void sendCommand(unsigned char *frame, unsigned char sync);
+    void buildFrame(unsigned char* frame, unsigned char button);
+    void sendCommand(unsigned char* frame, unsigned char sync);
 };
 
 #endif
