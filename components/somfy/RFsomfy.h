@@ -1,3 +1,4 @@
+#pragma once
 #include "esphome.h"
 #include "SomfyRts.h"
 #include <Arduino.h>
@@ -101,6 +102,12 @@ public:
         
 
         digitalWrite(STATUS_LED_PIN, LOW);
+
+        if (ELECHOUSE_cc1101.getCC1101()) {
+            ESP_LOGD("RFsomfy.h", "Communication established with the CC1101 module");
+        } else {
+            ESP_LOGD("RFsomfy.h", "Error: Could not establish communication with the CC1101 module");
+        }
 
         ELECHOUSE_cc1101.Init();
         ELECHOUSE_cc1101.setMHZ(433.42);
