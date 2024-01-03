@@ -270,6 +270,27 @@ public:
                 SPIFFS.end();
             }
 
+            // Debug commands
+            if (xpos == 90) {
+                setup();
+            }
+
+            if (xpos == 97) {
+                ELECHOUSE_cc1101.SetTx();
+            }
+
+            if (xpos == 98) {
+                ELECHOUSE_cc1101.setSidle();
+            }
+
+            if (xpos == 99) {
+                digitalWrite(2, HIGH);
+            }
+
+            if (xpos == 100) {
+                digitalWrite(2, LOW);
+            }
+
             // Don't publish
         }
 
