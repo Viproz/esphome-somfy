@@ -96,3 +96,8 @@ Some commands were created, accessed by tilting the blind to try to facilitate d
 // cmd 99 - Set the transmit pin to HIGH
 // cmd 100 - Set the transmit pin to LOW
 ```
+
+## Credits
+This project is based on [Nickduino implementation of the Somfy RTS remote](https://github.com/Nickduino/Somfy_Remote) and was first adapter to work with ESPHome by Daniel Stein.
+
+The code was then readapted by Vincent MALZIEU to make it work with CC1101 modules and the newer external component feature in Home Assistant.
