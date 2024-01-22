@@ -4,8 +4,7 @@
 #include "esphome/components/cover/cover.h"
 #include "SomfyRts.h"
 #include <Arduino.h>
-#include <FS.h>
-#include <SPIFFS.h>
+#include <Preferences.h>
 #include <ELECHOUSE_CC1101_SRC_DRV.h>
 
 namespace esphome {
@@ -14,7 +13,7 @@ namespace somfy {
 // cmd 11 - program mode
 // cmd 16 - porgram mode for grail curtains
 // cmd 21 - delete rolling code file
-// cmd 61 - Format filesystem and test.
+// cmd 61 - Clears all Preferences set
 // cmd 90 - Re-run the setup member
 // cmd 97 - Set the CC1101 module to TX mode
 // cmd 98 - Set the CC1101 module to idle
@@ -79,13 +78,14 @@ public:
     // delete rolling code . 0....n
     void delete_code()
     {
-        SPIFFS.begin();
-        String path = file_path(remoteId);
+        Preferences preferences;
+        preferences.begin("SomfyCover", false);
+        const char* path = file_path(remoteId).c_str();
 
-        SPIFFS.remove(path);
+        preferences.remove(path);
 
         ESP_LOGD("SomfyCover.h", "Deleted remote %i", remoteId);
-        SPIFFS.end();
+        preferences.end();
     }
 
     cover::CoverTraits get_traits() override
@@ -195,8 +195,8 @@ public:
             {
                 ESP_LOGD("SomfyCover.h", "61 mode");
 
-                // Begin and try to format on fail
-                bool success = SPIFFS.begin(true);
+                Preferences preferences;
+                bool success = preferences.begin("SomfyCover", false);
                 if (success) {
                     ESP_LOGW("SomfyCover.h", "Begin success");
                 }
@@ -204,36 +204,9 @@ public:
                     ESP_LOGW("SomfyCover.h", "Begin fail");
                 }
 
-                if (!SPIFFS.exists("/formatComplete.txt"))
-                {
-                    // Serial.println("Please wait 30 secs for SPIFFS to be formatted");
-                    // ESP_LOGW("SomfyCover.h", "Please wait 30 s");
+                preferences.clear();
 
-                    // success = SPIFFS.format(); // This seems to bug out and badly format the space
-                    // delay(30000);
-
-                    if (success) {
-                        ESP_LOGW("SomfyCover.h", "Spiffs formatted");
-                    }
-                    else {
-                        ESP_LOGW("SomfyCover.h", "Error while Spiffs formatting");
-                    }
-
-                    File f = SPIFFS.open("/formatComplete.txt", "w");
-                    if (!f) {
-                        ESP_LOGW("SomfyCover.h", "file open failed");
-                    }
-                    else {
-                        f.println("Format Complete");
-                        ESP_LOGW("SomfyCover.h", "Format Complete");
-                    }
-                    f.close();
-
-                }
-                else {
-                    ESP_LOGW("SomfyCover.h", "SPIFFS is formatted. Moving along...");
-                }
-                SPIFFS.end();
+                preferences.end();
             }
 
             // Debug commands

@@ -1,16 +1,9 @@
 #include "SomfyRts.h"
-#include <FS.h>
-#include <SPIFFS.h>
+#include <Preferences.h>
 
 SomfyRts::SomfyRts(uint32_t remoteID, bool debug)
 {
     _debug = debug;
-    _remoteId = remoteID;
-}
-
-SomfyRts::SomfyRts(uint32_t remoteID)
-{
-    _debug = false;
     _remoteId = remoteID;
 }
 
@@ -19,7 +12,8 @@ void SomfyRts::init()
     pinMode(REMOTE_TX_PIN, OUTPUT);
     digitalWrite(REMOTE_TX_PIN, LOW);
 
-    uint16_t rollingCode = _readRemoteRollingCode();
+    rollingCode = _readRemoteRollingCode();
+    savedRollingCode = rollingCode;
 
     if (Serial)
     {
@@ -32,11 +26,10 @@ void SomfyRts::init()
 
 void SomfyRts::buildFrame(unsigned char *frame, unsigned char button)
 {
-    unsigned int code = _readRemoteRollingCode();
     frame[0] = 0xA7;            // Encryption key. Doesn't matter much
     frame[1] = button << 4;     // Which button did  you press? The 4 LSB will be the checksum
-    frame[2] = code >> 8;       // Rolling code (big endian)
-    frame[3] = code;            // Rolling code
+    frame[2] = rollingCode >> 8;       // Rolling code (big endian)
+    frame[3] = rollingCode;            // Rolling code
     frame[4] = _remoteId >> 16; // Remote address
     frame[5] = _remoteId >> 8;  // Remote address
     frame[6] = _remoteId;       // Remote address
@@ -103,11 +96,19 @@ void SomfyRts::buildFrame(unsigned char *frame, unsigned char button)
         }
         Serial.println("");
         Serial.print("Rolling Code  : ");
-        Serial.println(code);
+        Serial.println(rollingCode);
     }
 
-    //  We store the value of the rolling code in the FS
-    _writeRemoteRollingCode(code + 1);
+    // We store the value of the rolling code in the FS if the saved value is too low
+    if(savedRollingCode <= rollingCode) {
+        // Write the rolling code of the future, do it once every 5th time to save on write cycles
+        _writeRemoteRollingCode(rollingCode + 5);
+        savedRollingCode = rollingCode + 5;
+    }
+
+    // Increment the rolling code
+    ++rollingCode;
+    
 }
 
 void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
@@ -222,45 +223,30 @@ void SomfyRts::sendCommandProgGrail()
 uint16_t SomfyRts::_readRemoteRollingCode()
 {
     uint16_t code = 0;
-    SPIFFS.begin();
-    if (SPIFFS.exists(_getConfigFilename()))
-    {
+    Preferences preferences;
+    // Open the project namespace as read only
+    preferences.begin("SomfyCover", true);
+
+    // Check if the key exists
+    if(preferences.isKey(_getConfigFilename().c_str())) {
         Serial.println("Reading config");
-        File f = SPIFFS.open(_getConfigFilename(), "r");
-        if (f)
-        {
-            String line = f.readStringUntil('\n');
-            code = line.toInt();
-            f.close();
-        }
-        else
-        {
-            Serial.println("File open failed");
-        }
+        code = preferences.getUShort(_getConfigFilename().c_str());
     }
 
-    SPIFFS.end();
+    preferences.end();
     return code;
 }
 
 void SomfyRts::_writeRemoteRollingCode(uint16_t code)
 {
+    Preferences preferences;
+    // Open the project namespace as read write
+    preferences.begin("SomfyCover", false);
 
-    SPIFFS.begin();
-    Serial.println("Writing config");
-    File f = SPIFFS.open(_getConfigFilename(), "w");
-    if (f)
-    {
-        f.println(code);
-        f.close();
-        Serial.print("Wrote code:");
-        Serial.println(code);
-    }
-    else
-    {
-        Serial.println("File creation failed");
-    }
-    SPIFFS.end();
+    // Save the code
+    preferences.putUShort(_getConfigFilename().c_str(), code);
+
+    preferences.end();
 }
 
 String SomfyRts::_getConfigFilename()

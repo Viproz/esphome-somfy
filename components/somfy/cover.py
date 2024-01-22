@@ -26,7 +26,6 @@ async def to_code(config):
     cg.add(var.setCoverID(config[CONF_REMOTEID_KEY]))
     
     cg.add_library("FS", None)
-    cg.add_library("SPIFFS", None)
     cg.add_library("SPI", None)
     cg.add_library(
         name="CC1101",

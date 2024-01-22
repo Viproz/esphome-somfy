@@ -18,13 +18,14 @@ private:
     uint32_t _remoteId;
     unsigned char _frame[7];
     char checksum;
+    uint16_t rollingCode;
+    uint16_t savedRollingCode;
     uint16_t _readRemoteRollingCode();
     void _writeRemoteRollingCode(uint16_t code);
     String _getConfigFilename();
 
 public:
-    SomfyRts(uint32_t remoteID, bool debug);
-    SomfyRts(uint32_t remoteID);
+    SomfyRts(uint32_t remoteID, bool debug=false);
     void init();
     void sendCommandUp();
     void sendCommandDown();
