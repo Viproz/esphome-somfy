@@ -8,8 +8,8 @@ Esphome configuration for Somfy RTS Blinds
 
 
 __Materials:__
-* 1 - [Wemos Mini D1](https://www.aliexpress.com/item/1005005972627549.html);
-* 1 - [CC1101 Module](https://www.aliexpress.com/item/1005006005197368.html);
+* 1 - [Wemos Mini D1](https://s.click.aliexpress.com/e/_DCIQhtB);
+* 1 - [CC1101 Module](https://s.click.aliexpress.com/e/_DkjwEXf);
 
 __Software:__
 * Running Home Assistant [https://www.home-assistant.io/]
@@ -36,7 +36,6 @@ external_components:
   - source:
       type: git
       url: https://github.com/Viproz/esphome-somfy
-      ref: dev
     components: [ somfy ]
     refresh: 1d
 
@@ -73,9 +72,8 @@ Discover the new esp32 board in Home Assistant and insert your new entities in y
 
 ![Blind control interface](/img/Blind%20control.png)
 
-3. If this if the first cover you are programming, slide the bar that controls the tilt position to the value 61, this will prepare the SPIFSS memory.
-4. Put your blind in programming mode. If necessary, consult the blind manual or the manufacturer, it usually consist in pressing the button on the back of the existing remote or power cycling the device if no remote exists.
-5. Slide the bar that controls the tilt position to the value 11, this makes the virtual remote enter programming mode.
+2. Put your blind in programming mode. If necessary, consult the blind manual or the manufacturer, it usually consist in pressing the button on the back of the existing remote or power cycling the device if no remote exists.
+3. Slide the bar that controls the tilt position to the value 11, this makes the virtual remote enter programming mode.
 
    a) If the programming succeeds without problems, your blind will move immediately.
    
@@ -89,7 +87,7 @@ Some commands were created, accessed by tilting the blind to try to facilitate d
 // cmd 11 - program mode
 // cmd 16 - program mode for grail curtains
 // cmd 21 - delete rolling code file
-// cmd 61 - Format filesystem and test.
+// cmd 61 - Clears all Preferences set
 // cmd 90 - Re-run the setup member
 // cmd 97 - Set the CC1101 module to TX mode
 // cmd 98 - Set the CC1101 module to idle
