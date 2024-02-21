@@ -227,10 +227,8 @@ uint16_t SomfyRts::readRemoteRollingCode()
     // Open the project namespace as read only
     preferences.begin("SomfyCover", true);
 
-    // Check if the key exists
-    if(preferences.isKey(_getConfigFilename().c_str())) {
-        code = preferences.getUShort(_getConfigFilename().c_str());
-    }
+    // Read the key, if it doesn't exist return 0
+    code = preferences.getUShort(getConfigFilename().c_str(), 0);
 
     preferences.end();
     return code;
@@ -243,15 +241,12 @@ void SomfyRts::_writeRemoteRollingCode(uint16_t code)
     preferences.begin("SomfyCover", false);
 
     // Save the code
-    preferences.putUShort(_getConfigFilename().c_str(), code);
-
+    preferences.putUShort(getConfigFilename().c_str(), code);
+    
     preferences.end();
 }
 
-String SomfyRts::_getConfigFilename()
+String SomfyRts::getConfigFilename()
 {
-    String path = "/data_remote_";
-    path += _remoteId;
-    path += ".txt";
-    return path;
+    return String(_remoteId);
 }

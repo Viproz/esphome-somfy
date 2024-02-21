@@ -6,13 +6,15 @@
 #include <Arduino.h>
 #include <Preferences.h>
 #include <ELECHOUSE_CC1101_SRC_DRV.h>
+#include <nvs_flash.h>
 
 namespace esphome {
 namespace somfy {
 
-// cmd 11 - program mode
-// cmd 16 - porgram mode for grail curtains
-// cmd 21 - delete rolling code file
+// cmd 0 - Prints the current rolling code
+// cmd 11 - Program mode
+// cmd 16 - Program mode for grail curtains
+// cmd 21 - Delete rolling code file
 // cmd 61 - Clears all Preferences set
 // cmd 90 - Re-run the setup member
 // cmd 97 - Set the CC1101 module to TX mode
@@ -22,15 +24,6 @@ namespace somfy {
 
 #define REMOTE_TX_PIN 2
 #define REMOTE_FIRST_ADDR 0x121311 // Starting number for remote indexes
-
-
-String file_path(int remoteId)
-{
-    String path = "/data_remote_";
-    path += remoteId;
-    path += ".txt";
-    return path;
-}
 
 class SomfyCover : public Component, public cover::Cover
 {
@@ -80,7 +73,7 @@ public:
     {
         Preferences preferences;
         preferences.begin("SomfyCover", false);
-        const char* path = file_path(remoteId).c_str();
+        const char* path = rtsDevice->getConfigFilename().c_str();
 
         preferences.remove(path);
 
@@ -200,7 +193,10 @@ public:
 
             if (xpos == 61)
             {
-                ESP_LOGD("SomfyCover.h", "Clearing values in Preference library.");
+                ESP_LOGD("SomfyCover.h", "Clearing all values in Preference library.");
+
+                nvs_flash_erase(); // erase the NVS partition and...
+                nvs_flash_init(); // initialize the NVS partition.
 
                 Preferences preferences;
                 bool success = preferences.begin("SomfyCover", false);
@@ -211,7 +207,13 @@ public:
                     ESP_LOGW("SomfyCover.h", "Begin fail");
                 }
 
-                preferences.clear();
+                int ret = preferences.putUShort("test", 20);
+                if (ret == 0) {
+                    ESP_LOGW("SomfyCover.h", "Error while test-writing.");
+                }
+                else {
+                    ESP_LOGW("SomfyCover.h", "Memory write success.");
+                }
 
                 preferences.end();
             }

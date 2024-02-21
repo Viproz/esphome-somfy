@@ -22,7 +22,6 @@ private:
     uint16_t rollingCode;
     uint16_t savedRollingCode;
     void _writeRemoteRollingCode(uint16_t code);
-    String _getConfigFilename();
 
 public:
     SomfyRts(uint32_t remoteID, bool debug=false);
@@ -35,6 +34,7 @@ public:
     void buildFrame(unsigned char* frame, unsigned char button);
     void sendCommand(unsigned char* frame, unsigned char sync);
     uint16_t readRemoteRollingCode();
+    String getConfigFilename();
 };
 
 #endif
