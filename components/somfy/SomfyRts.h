@@ -1,6 +1,7 @@
 #ifndef somfyrts_h
 #define somfyrts_h
 #include <Arduino.h>
+#include <Preferences.h>
 
 #define SYMBOL 640
 #define HAUT 0x2
