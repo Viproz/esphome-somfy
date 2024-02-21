@@ -21,7 +21,6 @@ private:
     char checksum;
     uint16_t rollingCode;
     uint16_t savedRollingCode;
-    uint16_t _readRemoteRollingCode();
     void _writeRemoteRollingCode(uint16_t code);
     String _getConfigFilename();
 
@@ -35,6 +34,7 @@ public:
     void sendCommandProgGrail();
     void buildFrame(unsigned char* frame, unsigned char button);
     void sendCommand(unsigned char* frame, unsigned char sync);
+    uint16_t readRemoteRollingCode();
 };
 
 #endif

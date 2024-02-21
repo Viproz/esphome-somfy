@@ -164,6 +164,13 @@ public:
             int xpos = tpos * 100;
             ESP_LOGI("SomfyCover.h", "Command tilt xpos: %d", xpos);
 
+            if (xpos == 0)
+            {
+                String txt = "Current rolling code is ";
+                txt += rtsDevice->readRemoteRollingCode();
+                txt += ".";
+                ESP_LOGD("SomfyCover.h", txt.c_str());
+            }
             if (xpos == 11)
             {
                 ESP_LOGD("SomfyCover.h", "program mode");
@@ -193,7 +200,7 @@ public:
 
             if (xpos == 61)
             {
-                ESP_LOGD("SomfyCover.h", "61 mode");
+                ESP_LOGD("SomfyCover.h", "Clearing values in Preference library.");
 
                 Preferences preferences;
                 bool success = preferences.begin("SomfyCover", false);

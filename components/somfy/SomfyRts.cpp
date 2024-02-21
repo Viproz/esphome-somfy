@@ -12,7 +12,7 @@ void SomfyRts::init()
     pinMode(REMOTE_TX_PIN, OUTPUT);
     digitalWrite(REMOTE_TX_PIN, LOW);
 
-    rollingCode = _readRemoteRollingCode();
+    rollingCode = readRemoteRollingCode();
     savedRollingCode = rollingCode;
 
     if (Serial)
@@ -220,7 +220,7 @@ void SomfyRts::sendCommandProgGrail()
     sendCommandProg();
 }
 
-uint16_t SomfyRts::_readRemoteRollingCode()
+uint16_t SomfyRts::readRemoteRollingCode()
 {
     uint16_t code = 0;
     Preferences preferences;
@@ -229,7 +229,6 @@ uint16_t SomfyRts::_readRemoteRollingCode()
 
     // Check if the key exists
     if(preferences.isKey(_getConfigFilename().c_str())) {
-        Serial.println("Reading config");
         code = preferences.getUShort(_getConfigFilename().c_str());
     }
 
