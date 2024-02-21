@@ -29,7 +29,7 @@ Using some cables or a PCB board connect the CC1101 to the ESP32 with the follow
 
 ## Usage:
 
-In your ESPHome installation create a new device, configure the different modules as you ike and add the following lines at the end:
+In your ESPHome installation create a new device, configure the different modules as you like and add the following lines at the end:
 
 ````
 external_components:
@@ -38,6 +38,8 @@ external_components:
       url: https://github.com/Viproz/esphome-somfy
     components: [ somfy ]
     refresh: 1d
+preferences:
+  flash_write_interval: 0s
 
 cover:
   - platform: somfy
@@ -72,7 +74,7 @@ Discover the new esp32 board in Home Assistant and insert your new entities in y
 
 ![Blind control interface](/img/Blind%20control.png)
 
-2. Put your blind in programming mode. If necessary, consult the blind manual or the manufacturer, it usually consist in pressing the button on the back of the existing remote or power cycling the device if no remote exists.
+2. Put your blind in programming mode. If necessary, consult the blind manual or the manufacturer, it usually consist in pressing the button on the back of the existing remote a few seconds or power cycling the device if no remote exists.
 3. Slide the bar that controls the tilt position to the value 11, this makes the virtual remote enter programming mode.
 
    a) If the programming succeeds without problems, your blind will move immediately.
@@ -84,9 +86,10 @@ Discover the new esp32 board in Home Assistant and insert your new entities in y
 Some commands were created, accessed by tilting the blind to try to facilitate debugging and configuration.
 
 ```
-// cmd 11 - program mode
-// cmd 16 - program mode for grail curtains
-// cmd 21 - delete rolling code file
+// cmd 0 - Prints the current rolling code
+// cmd 11 - Program mode
+// cmd 16 - Program mode for grail curtains
+// cmd 21 - Delete rolling code file
 // cmd 61 - Clears all Preferences set
 // cmd 90 - Re-run the setup member
 // cmd 97 - Set the CC1101 module to TX mode
@@ -96,6 +99,6 @@ Some commands were created, accessed by tilting the blind to try to facilitate d
 ```
 
 ## Credits
-This project is based on [Nickduino implementation of the Somfy RTS remote](https://github.com/Nickduino/Somfy_Remote) and was first adapter to work with ESPHome by Daniel Stein.
+This project is based on [Nickduino implementation of the Somfy RTS remote](https://github.com/Nickduino/Somfy_Remote) and was first adapted to work with ESPHome by Daniel Stein.
 
-The code was then readapted by Vincent MALZIEU to make it work with CC1101 modules and the newer external component feature in Home Assistant.
+The code was then readapted by Vincent MALZIEU to make it work with CC1101 modules and the newer external component feature in ESPHome.
