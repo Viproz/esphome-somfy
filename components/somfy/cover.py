@@ -27,6 +27,7 @@ async def to_code(config):
     
     cg.add_library("FS", None)
     cg.add_library("SPI", None)
+    cg.add_library("Preferences", None)
     cg.add_library(
         name="CC1101",
         repository="https://github.com/Viproz/SmartRC-CC1101-Driver-Lib",
