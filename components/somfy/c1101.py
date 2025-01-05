@@ -1,19 +1,19 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import cover
+from esphome.components import sensor
 from esphome.const import (
     CONF_ID,
 )
 
-CONF_REMOTEID_KEY = 'RemoteID'
+CONF_FREQ_KEY = 'RemoteID'
 
-somfy_ns = cg.esphome_ns.namespace("somfy")
-SomfyCover = somfy_ns.class_("SomfyCover", cover.Cover, cg.Component)
+c1101_ns = cg.esphome_ns.namespace("c1101")
+C1101Wrapper = c1101_ns.class_("C1101Wrapper", sensor.Sensor, cg.Component)
 
-CONFIG_SCHEMA = cover.COVER_SCHEMA.extend(
+CONFIG_SCHEMA = sensor.SENSOR_SCHEMA.extend(
     {
-        cv.GenerateID(): cv.declare_id(SomfyCover),
-        cv.Required(CONF_REMOTEID_KEY): cv.int_,
+        cv.GenerateID(): cv.declare_id(C1101Wrapper),
+        cv.Required(CONF_FREQ_KEY): cv.float_,
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
@@ -21,11 +21,10 @@ CONFIG_SCHEMA = cover.COVER_SCHEMA.extend(
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
-    await cover.register_cover(var, config)
+    await sensor.register_sensor(var, config)
 
-    cg.add(var.setCoverID(config[CONF_REMOTEID_KEY]))
+    cg.add(var.setFrequency(config[CONF_FREQ_KEY]))
     
-    cg.add_library("FS", None)
     cg.add_library("SPI", None)
     cg.add_library("Preferences", None)
     cg.add_library(
