@@ -5,7 +5,7 @@ from esphome.const import (
     CONF_ID,
 )
 
-CONF_FREQ_KEY = 'Frequency'
+CONF_FREQ_KEY = 'frequency'
 
 c1101_ns = cg.esphome_ns.namespace("c1101")
 C1101Wrapper = c1101_ns.class_("C1101Wrapper", sensor.Sensor, cg.Component)
