@@ -113,6 +113,7 @@ void SomfyRts::buildFrame(unsigned char *frame, unsigned char button)
 
 void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
 {
+    // Total frame is a bit more than 210105 us = 210 ms
     if (sync == 2)
     { // Only with the first frame.
         // Wake-up pulse & Silence
@@ -210,12 +211,10 @@ void SomfyRts::sendCommandProgGrail()
     for (int i = 0; i < 35; i++)
     {
         sendCommand(_frame, 7);
-        yield();
     }
     for (int i = 0; i < 40; i++)
     {
         delayMicroseconds(100000);
-        yield();
     }
     sendCommandProg();
 }
