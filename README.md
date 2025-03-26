@@ -5,7 +5,7 @@ Esphome configuration for Somfy RTS Blinds
 
 <img alt="Contributors" src="https://img.shields.io/github/contributors/Viproz/esphome-somfy"> <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Viproz/esphome-somfy">
 
-
+[**This product is available all assembled on Tindie!**](https://www.tindie.com/products/domotech/somfy-rts-remote-for-home-assistant-and-esphome/)
 
 __Materials:__
 * 1 - [Wemos Mini D1](https://s.click.aliexpress.com/e/_DCIQhtB);
@@ -44,14 +44,15 @@ preferences:
 cover:
   - platform: somfy
     name: "Living room shutter"
-    RemoteID: 1
+    RemoteID: 11234
     device_class: shutter
   - platform: somfy
     name: "Kitchen shutter"
-    RemoteID: 2
+    RemoteID: 2896
     device_class: shutter
 ````
 You can add as many cover elemnts as you would like, make sure all the RemoteID elements are unique.
+For additionnal security it is recommended to use random numbers for the remote IDs between 1 and 16777214, [you can generate them online](https://www.random.org/integers/?num=10&min=1&max=16777214&col=1&base=10&format=html&rnd=new).
 
 Install the configuration onto your ESP32 board.
 
