@@ -15,6 +15,7 @@ namespace somfy {
 // cmd 11 - Program mode
 // cmd 16 - Program mode for grail curtains
 // cmd 21 - Delete rolling code file
+// cmd 50 - Long Program mode
 // cmd 61 - Clears all Preferences set
 // cmd 90 - Re-run the setup member
 // cmd 97 - Set the CC1101 module to TX mode
@@ -190,7 +191,17 @@ public:
                 delete_code();
                 delay(1000);
             }
+            if (xpos == 50)
+            {
+                ESP_LOGD("SomfyCover.h", "long program mode");
+                ELECHOUSE_cc1101.SetTx();
+                
+                for (int iProg = 0 ; iProg < 15 ; ++iProg)
+                    rtsDevice->sendCommandProg();
 
+                ELECHOUSE_cc1101.setSidle();
+                delay(1000);
+            }
             if (xpos == 61)
             {
                 ESP_LOGD("SomfyCover.h", "Clearing all values in Preference library.");
