@@ -19,7 +19,7 @@ private:
     bool _debug;
     uint32_t _remoteId;
     unsigned char _frame[7];
-    unsigned char _buffer[100];
+    unsigned char _buffer[500];
     unsigned int _bufferBit;
     char checksum;
     uint16_t rollingCode;
