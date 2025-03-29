@@ -1,10 +1,11 @@
 #include "SomfyRts.h"
 #include <Preferences.h>
 
-SomfyRts::SomfyRts(uint32_t remoteID, bool debug)
+SomfyRts::SomfyRts(uint32_t remoteID, std::queue<unsigned char>* bufferQueue)
 {
-    _debug = debug;
     _remoteId = remoteID;
+    _bufferQueue = bufferQueue;
+    _bufferBit = 0;
 }
 
 void SomfyRts::init()
@@ -111,56 +112,71 @@ void SomfyRts::buildFrame(unsigned char *frame, unsigned char button)
     
 }
 
+void SomfyRts::setNextBufferBit(char state, int nbBits)
+{
+    for (int i = 0; i < nbBits; ++i) {
+        if (state == 0) {
+            _bufferByte = _bufferByte & ~(1 << (7 - _bufferBit % 8));
+        } else {
+            _bufferByte = _bufferByte | (1 << (7 - _bufferBit % 8));
+        }
+        ++_bufferBit;
+
+        if (_bufferBit >= 8) {
+            // Add the byte to the queue
+            _bufferQueue->push(_bufferByte);
+            _bufferByte = 0;
+            _bufferBit = 0;
+        }
+    }
+}
+
+void SomfyRts::completeBuffer()
+{
+    // Send the rest of the byte however full it is, it guarantees to finish with a 0
+    _bufferQueue->push(_bufferByte);
+    _bufferByte = 0;
+    _bufferBit = 0;
+}
+
 void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
 {
     // Total frame is a bit more than 210105 us = 210 ms
     if (sync == 2)
     { // Only with the first frame.
         // Wake-up pulse & Silence
-        digitalWrite(REMOTE_TX_PIN, HIGH);
-        delayMicroseconds(9415);
-        digitalWrite(REMOTE_TX_PIN, LOW);
-        delayMicroseconds(89565);
+        setNextBufferBit(1, 16);
+        setNextBufferBit(0, 148);
     }
 
     // Hardware sync: two sync for the first frame, seven for the following ones.
-    for (int i = 0; i < sync; i++)
-    {
-        digitalWrite(REMOTE_TX_PIN, HIGH);
-        delayMicroseconds(4 * SYMBOL);
-        digitalWrite(REMOTE_TX_PIN, LOW);
-        delayMicroseconds(4 * SYMBOL);
+    for (int i = 0; i < sync; i++) {
+        setNextBufferBit(1, 4);
+        
+        setNextBufferBit(0, 4);
     }
 
     // Software sync
-    digitalWrite(REMOTE_TX_PIN, HIGH);
-    delayMicroseconds(4550);
-    digitalWrite(REMOTE_TX_PIN, LOW);
-    delayMicroseconds(SYMBOL);
+    setNextBufferBit(1, 8);
+    setNextBufferBit(0);
 
     // Data: bits are sent one by one, starting with the MSB.
     for (byte i = 0; i < 56; i++)
     {
         if (((frame[i / 8] >> (7 - (i % 8))) & 1) == 1)
         {
-            digitalWrite(REMOTE_TX_PIN, LOW);
-            delayMicroseconds(SYMBOL);
-            // PORTD ^= 1<<5;
-            digitalWrite(REMOTE_TX_PIN, HIGH);
-            delayMicroseconds(SYMBOL);
+            setNextBufferBit(0);
+            setNextBufferBit(1);
         }
         else
         {
-            digitalWrite(REMOTE_TX_PIN, HIGH);
-            delayMicroseconds(SYMBOL);
-            // PORTD ^= 1<<5;
-            digitalWrite(REMOTE_TX_PIN, LOW);
-            delayMicroseconds(SYMBOL);
+            setNextBufferBit(1);
+            setNextBufferBit(0);
         }
     }
 
-    digitalWrite(REMOTE_TX_PIN, LOW);
-    delayMicroseconds(30415); // Inter-frame silence
+    // Inter-frame silence
+    setNextBufferBit(0, 51);
 }
 
 void SomfyRts::sendCommandUp()
@@ -171,6 +187,7 @@ void SomfyRts::sendCommandUp()
     {
         sendCommand(_frame, 7);
     }
+    completeBuffer();
 }
 
 void SomfyRts::sendCommandDown()
@@ -181,6 +198,7 @@ void SomfyRts::sendCommandDown()
     {
         sendCommand(_frame, 7);
     }
+    completeBuffer();
 }
 
 void SomfyRts::sendCommandStop()
@@ -191,32 +209,31 @@ void SomfyRts::sendCommandStop()
     {
         sendCommand(_frame, 7);
     }
+    completeBuffer();
 }
 
-void SomfyRts::sendCommandProg()
+void SomfyRts::sendCommandProg(int nbCmd)
 {
     buildFrame(_frame, PROG);
     sendCommand(_frame, 2);
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < nbCmd; i++)
     {
         sendCommand(_frame, 7);
     }
+    completeBuffer();
 }
 
 // support for grail is limited: I can only pair one remote
 void SomfyRts::sendCommandProgGrail()
 {
-    buildFrame(_frame, PROG);
-    sendCommand(_frame, 2);
-    for (int i = 0; i < 35; i++)
-    {
-        sendCommand(_frame, 7);
-    }
-    for (int i = 0; i < 40; i++)
-    {
-        delayMicroseconds(100000);
-    }
+    // No clue what grail is
+    sendCommandProg(35);
+    
+    // Wait 4s
+    setNextBufferBit(0, 6250);
+
     sendCommandProg();
+    completeBuffer();
 }
 
 uint16_t SomfyRts::readRemoteRollingCode()
