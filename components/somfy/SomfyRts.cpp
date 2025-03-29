@@ -186,7 +186,7 @@ void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
     }
     Serial.println();
     
-    _cc1101->SpiWriteReg(CC1101_TXFIFO,len);
+    //_cc1101->SpiWriteReg(CC1101_TXFIFO,len);
     _cc1101->SpiWriteBurstReg(CC1101_TXFIFO,_buffer,len);      //write data to send
     _cc1101->SpiStrobe(CC1101_SIDLE);
     _cc1101->SpiStrobe(CC1101_STX);                  //start send

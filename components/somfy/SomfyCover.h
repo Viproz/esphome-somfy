@@ -67,6 +67,7 @@ public:
         }
 
         cc1101.Init();
+        
         cc1101.setCCMode(1);
         cc1101.setMHZ(433.42);
         cc1101.setModulation(2); // ASK/OOK
@@ -101,7 +102,8 @@ public:
                 chartobyte[i] = 0xFF;
             }
         }
-        cc1101.SpiWriteReg(CC1101_TXFIFO,len);
+        //cc1101.SpiStrobe(CC1101_SFTX); // Flush the TX FIFO
+        //cc1101.SpiWriteReg(CC1101_TXFIFO,len);
         cc1101.SpiWriteBurstReg(CC1101_TXFIFO,chartobyte,len);      //write data to send
         cc1101.SpiStrobe(CC1101_SIDLE);
         cc1101.SpiStrobe(CC1101_STX);                  //start send
