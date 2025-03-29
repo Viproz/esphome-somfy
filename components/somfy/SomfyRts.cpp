@@ -173,7 +173,7 @@ void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
         setNextBufferBit(0);
     }
 
-    _cc1101.SendData(_buffer, _bufferBit / 8);
+    _cc1101->SendData(_buffer, _bufferBit / 8);
 }
 
 void SomfyRts::sendCommandUp()
