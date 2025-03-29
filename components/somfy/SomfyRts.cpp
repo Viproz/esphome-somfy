@@ -179,6 +179,7 @@ void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
     for (size_t i = 0; i < len; i++)
     {
         Serial.print(_buffer[i], HEX);
+        Serial.println();
     }
     
     _cc1101->SpiWriteReg(CC1101_TXFIFO,len);
@@ -193,7 +194,7 @@ void SomfyRts::sendCommandUp()
     sendCommand(_frame, 2);
     for (int i = 0; i < 2; i++)
     {
-        sendCommand(_frame, 7);
+        //sendCommand(_frame, 7);
     }
 }
 
@@ -203,7 +204,7 @@ void SomfyRts::sendCommandDown()
     sendCommand(_frame, 2);
     for (int i = 0; i < 2; i++)
     {
-        sendCommand(_frame, 7);
+        //sendCommand(_frame, 7);
     }
 }
 
