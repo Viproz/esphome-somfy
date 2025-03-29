@@ -201,21 +201,17 @@ public:
             if (xpos == 11)
             {
                 ESP_LOGD("SomfyCover.h", "program mode");
-                cc1101.SetTx();
 
                 rtsDevice->sendCommandProg();
 
-                cc1101.setSidle();
                 delay(1000);
             }
             if (xpos == 16)
             {
                 ESP_LOGD("SomfyCover.h", "program mode - grail");
-                cc1101.SetTx();
 
                 rtsDevice->sendCommandProgGrail();
 
-                cc1101.setSidle();
                 delay(1000);
             }
             if (xpos == 21)
