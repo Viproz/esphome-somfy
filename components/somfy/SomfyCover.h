@@ -71,7 +71,7 @@ public:
         cc1101.setMHZ(433.42);
         cc1101.setModulation(2); // ASK/OOK
         cc1101.setDRate(1700.);  // Set the Data Rate in kBaud. Value from 0.02 to 1621.83.
-        string txchar = "t";
+
         int len = strlen("test");
         byte chartobyte[len];
         for (int i = 0; i<len; i++){chartobyte[i] = 't';}
