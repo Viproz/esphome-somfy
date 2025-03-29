@@ -26,9 +26,10 @@ private:
     uint16_t savedRollingCode;
     void _writeRemoteRollingCode(uint16_t code);
     void setNextBufferBit(char state);
+    ELECHOUSE_CC1101* _cc1101;
 
 public:
-    SomfyRts(uint32_t remoteID, bool debug=false);
+    SomfyRts(uint32_t remoteID, ELECHOUSE_CC1101* cc1101);
     void init();
     void sendCommandUp();
     void sendCommandDown();

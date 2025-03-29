@@ -1,11 +1,11 @@
 #include "SomfyRts.h"
 #include <Preferences.h>
 
-SomfyRts::SomfyRts(uint32_t remoteID, bool debug)
+SomfyRts::SomfyRts(uint32_t remoteID, ELECHOUSE_CC1101 *cc1101)
 {
-    _debug = debug;
     _remoteId = remoteID;
     _bufferBit = 0;
+    _cc1101 = cc1101;
 }
 
 void SomfyRts::init()
@@ -173,7 +173,7 @@ void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
         setNextBufferBit(0);
     }
 
-    ELECHOUSE_cc1101.SendData(_buffer, _bufferBit / 8);
+    _cc1101.SendData(_buffer, _bufferBit / 8);
 }
 
 void SomfyRts::sendCommandUp()

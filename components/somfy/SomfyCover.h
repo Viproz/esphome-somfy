@@ -36,6 +36,7 @@ private:
     SomfyRts* rtsDevice;
 
 public:
+    static ELECHOUSE_CC1101 cc1101;
     void setCoverID(int coverID)
     {
         index = coverID;
@@ -44,7 +45,7 @@ public:
 
     void setup() override
     {
-        rtsDevice = new SomfyRts(remoteId);
+        rtsDevice = new SomfyRts(remoteId, &cc1101);
 
         ESP_LOGD("SomfyCover.h", "Cover %d", index);
 
@@ -58,17 +59,17 @@ public:
         rtsDevice->init();
 
 
-        if (ELECHOUSE_cc1101.getCC1101()) {
+        if (cc1101.getCC1101()) {
             ESP_LOGD("SomfyCover.h", "Communication established with the CC1101 module");
         }
         else {
             ESP_LOGD("SomfyCover.h", "Error: Could not establish communication with the CC1101 module");
         }
 
-        ELECHOUSE_cc1101.Init();
-        ELECHOUSE_cc1101.setMHZ(433.42);
-        ELECHOUSE_cc1101.setModulation(2); // ASK/OOK
-        ELECHOUSE_cc1101.setDRate(1700.);  // Set the Data Rate in kBaud. Value from 0.02 to 1621.83.
+        cc1101.Init();
+        cc1101.setMHZ(433.42);
+        cc1101.setModulation(2); // ASK/OOK
+        cc1101.setDRate(1700.);  // Set the Data Rate in kBaud. Value from 0.02 to 1621.83.
     }
 
     // delete rolling code . 0....n
@@ -112,32 +113,32 @@ public:
             if (ppos == 0) {
                 ESP_LOGD("SomfyCover.h", "POS 0");
                 Serial.println("* Command Down");
-                ELECHOUSE_cc1101.SetTx();
+                cc1101.SetTx();
 
                 rtsDevice->sendCommandDown();
 
-                ELECHOUSE_cc1101.setSidle();
+                cc1101.setSidle();
                 pos = 0.01;
             }
             else if (ppos == 100) {
                 ESP_LOGD("SomfyCover.h", "POS 100");
                 Serial.println("* Command UP");
-                ELECHOUSE_cc1101.SetTx();
+                cc1101.SetTx();
 
                 rtsDevice->sendCommandUp();
 
-                ELECHOUSE_cc1101.setSidle();
+                cc1101.setSidle();
                 pos = 0.99;
             }
             else {
                 // In between position, set it to saved position
                 ESP_LOGD("SomfyCover.h", "POS 50");
                 Serial.println("* Command MY");
-                ELECHOUSE_cc1101.SetTx();
+                cc1101.SetTx();
 
                 rtsDevice->sendCommandStop();
 
-                ELECHOUSE_cc1101.setSidle();
+                cc1101.setSidle();
                 pos = 0.5;
             }
 
@@ -148,11 +149,11 @@ public:
         else if (call.get_stop()) {
             // User requested cover stop
             ESP_LOGD("SomfyCover", "get_stop");
-            ELECHOUSE_cc1101.SetTx();
+            cc1101.SetTx();
 
             rtsDevice->sendCommandStop();
 
-            ELECHOUSE_cc1101.setSidle();
+            cc1101.setSidle();
         }
         else if (call.get_tilt().has_value()) {
             // Tilt is only for debug/programation
@@ -170,21 +171,21 @@ public:
             if (xpos == 11)
             {
                 ESP_LOGD("SomfyCover.h", "program mode");
-                ELECHOUSE_cc1101.SetTx();
+                cc1101.SetTx();
 
                 rtsDevice->sendCommandProg();
 
-                ELECHOUSE_cc1101.setSidle();
+                cc1101.setSidle();
                 delay(1000);
             }
             if (xpos == 16)
             {
                 ESP_LOGD("SomfyCover.h", "program mode - grail");
-                ELECHOUSE_cc1101.SetTx();
+                cc1101.SetTx();
 
                 rtsDevice->sendCommandProgGrail();
 
-                ELECHOUSE_cc1101.setSidle();
+                cc1101.setSidle();
                 delay(1000);
             }
             if (xpos == 21)
@@ -196,12 +197,12 @@ public:
             if (xpos == 50)
             {
                 ESP_LOGD("SomfyCover.h", "long program mode");
-                ELECHOUSE_cc1101.SetTx();
+                cc1101.SetTx();
                 
                 for (int iProg = 0 ; iProg < 15 ; ++iProg)
                     rtsDevice->sendCommandProg();
 
-                ELECHOUSE_cc1101.setSidle();
+                cc1101.setSidle();
                 delay(1000);
             }
             if (xpos == 61)
@@ -237,11 +238,11 @@ public:
             }
 
             if (xpos == 97) {
-                ELECHOUSE_cc1101.SetTx();
+                cc1101.SetTx();
             }
 
             if (xpos == 98) {
-                ELECHOUSE_cc1101.setSidle();
+                cc1101.setSidle();
             }
 
             if (xpos == 99) {
