@@ -72,9 +72,15 @@ public:
         cc1101.setModulation(2); // ASK/OOK
         cc1101.setDRate(1.7);  // Set the Data Rate in kBaud. Value from 0.02 to 1621.83.
 
-        int len = strlen("test");
+        int len = 30;
         byte chartobyte[len];
-        for (int i = 0; i<len; i++){chartobyte[i] = 't';}
+        for (int i = 0; i<len; i++) {
+            if (i < 15) {
+                chartobyte[i] = 0x00;
+            } else {
+                chartobyte[i] = 0xFF;
+            }
+        }
         cc1101.SpiWriteReg(CC1101_TXFIFO,len);
         cc1101.SpiWriteBurstReg(CC1101_TXFIFO,chartobyte,len);      //write data to send
         cc1101.SpiStrobe(CC1101_SIDLE);

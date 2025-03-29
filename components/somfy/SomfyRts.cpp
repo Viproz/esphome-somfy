@@ -176,16 +176,21 @@ void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
     
 
     int len = _bufferBit / 8;
+    Serial.println(len);
     for (size_t i = 0; i < len; i++)
     {
+        if (_buffer[i] >> 4 == 0) {
+            Serial.print("0");
+        }
         Serial.print(_buffer[i], HEX);
-        Serial.println();
     }
+    Serial.println();
     
     _cc1101->SpiWriteReg(CC1101_TXFIFO,len);
     _cc1101->SpiWriteBurstReg(CC1101_TXFIFO,_buffer,len);      //write data to send
     _cc1101->SpiStrobe(CC1101_SIDLE);
     _cc1101->SpiStrobe(CC1101_STX);                  //start send
+    _bufferBit = 0; // Reset the buffer bit counter
 }
 
 void SomfyRts::sendCommandUp()
