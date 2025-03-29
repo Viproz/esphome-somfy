@@ -123,32 +123,26 @@ public:
             if (ppos == 0) {
                 ESP_LOGD("SomfyCover.h", "POS 0");
                 Serial.println("* Command Down");
-                cc1101.SetTx();
 
                 rtsDevice->sendCommandDown();
 
-                cc1101.setSidle();
                 pos = 0.01;
             }
             else if (ppos == 100) {
                 ESP_LOGD("SomfyCover.h", "POS 100");
                 Serial.println("* Command UP");
-                cc1101.SetTx();
 
                 rtsDevice->sendCommandUp();
 
-                cc1101.setSidle();
                 pos = 0.99;
             }
             else {
                 // In between position, set it to saved position
                 ESP_LOGD("SomfyCover.h", "POS 50");
                 Serial.println("* Command MY");
-                cc1101.SetTx();
 
                 rtsDevice->sendCommandStop();
 
-                cc1101.setSidle();
                 pos = 0.5;
             }
 
@@ -159,11 +153,9 @@ public:
         else if (call.get_stop()) {
             // User requested cover stop
             ESP_LOGD("SomfyCover", "get_stop");
-            cc1101.SetTx();
 
             rtsDevice->sendCommandStop();
 
-            cc1101.setSidle();
         }
         else if (call.get_tilt().has_value()) {
             // Tilt is only for debug/programation
