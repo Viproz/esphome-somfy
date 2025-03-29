@@ -71,7 +71,15 @@ public:
         cc1101.setMHZ(433.42);
         cc1101.setModulation(2); // ASK/OOK
         cc1101.setDRate(1700.);  // Set the Data Rate in kBaud. Value from 0.02 to 1621.83.
-        cc1101.SendData("t");
+        string txchar = "t";
+        int len = strlen("test");
+        byte chartobyte[len];
+        for (int i = 0; i<len; i++){chartobyte[i] = 't';}
+        cc1101.SpiWriteReg(CC1101_TXFIFO,len);
+        cc1101.SpiWriteBurstReg(CC1101_TXFIFO,chartobyte,len);      //write data to send
+        cc1101.SpiStrobe(CC1101_SIDLE);
+        cc1101.SpiStrobe(CC1101_STX);                  //start send
+
     }
 
     // delete rolling code . 0....n
