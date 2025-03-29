@@ -173,7 +173,11 @@ void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
         setNextBufferBit(0);
     }
 
-    _cc1101->SendData(_buffer, _bufferBit / 8);
+    int len = _bufferBit / 8;
+    _cc1101->SpiWriteReg(CC1101_TXFIFO,len);
+    _cc1101->SpiWriteBurstReg(CC1101_TXFIFO,_buffer,len);      //write data to send
+    _cc1101->SpiStrobe(CC1101_SIDLE);
+    _cc1101->SpiStrobe(CC1101_STX);                  //start send
 }
 
 void SomfyRts::sendCommandUp()
