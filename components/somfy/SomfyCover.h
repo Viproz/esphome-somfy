@@ -260,5 +260,7 @@ public:
     }
 };
 
+ELECHOUSE_CC1101 SomfyCover::cc1101;
+
 }  // namespace somfy
 }  // namespace esphome
