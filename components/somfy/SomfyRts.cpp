@@ -5,6 +5,7 @@ SomfyRts::SomfyRts(uint32_t remoteID, bool debug)
 {
     _debug = debug;
     _remoteId = remoteID;
+    _bufferBit = 0;
 }
 
 void SomfyRts::init()
@@ -111,56 +112,68 @@ void SomfyRts::buildFrame(unsigned char *frame, unsigned char button)
     
 }
 
+void SomfyRts::setNextBufferBit(char state)
+{
+    if (state == 0) {
+        _buffer[_bufferBit / 8] = _buffer[_bufferBit / 8] & ~(1 << (7 - _bufferBit % 8));
+    } else {
+        _buffer[_bufferBit / 8] = _buffer[_bufferBit / 8] | (1 << (7 - _bufferBit % 8));
+    }
+    ++_bufferBit;
+}
+
 void SomfyRts::sendCommand(unsigned char *frame, unsigned char sync)
 {
     // Total frame is a bit more than 210105 us = 210 ms
     if (sync == 2)
     { // Only with the first frame.
         // Wake-up pulse & Silence
-        digitalWrite(REMOTE_TX_PIN, HIGH);
-        delayMicroseconds(9415);
-        digitalWrite(REMOTE_TX_PIN, LOW);
-        delayMicroseconds(89565);
+        for (size_t i = 0; i < 16; ++i) {
+            setNextBufferBit(1);
+        }
+        
+        for (size_t i = 0; i < 148; ++i) {
+            setNextBufferBit(0);
+        }
     }
 
     // Hardware sync: two sync for the first frame, seven for the following ones.
-    for (int i = 0; i < sync; i++)
-    {
-        digitalWrite(REMOTE_TX_PIN, HIGH);
-        delayMicroseconds(4 * SYMBOL);
-        digitalWrite(REMOTE_TX_PIN, LOW);
-        delayMicroseconds(4 * SYMBOL);
+    for (int i = 0; i < sync; i++) {
+        for (size_t i = 0; i < 4; ++i) {
+            setNextBufferBit(1);
+        }
+        
+        for (size_t i = 0; i < 4; ++i) {
+            setNextBufferBit(0);
+        }
     }
 
     // Software sync
-    digitalWrite(REMOTE_TX_PIN, HIGH);
-    delayMicroseconds(4550);
-    digitalWrite(REMOTE_TX_PIN, LOW);
-    delayMicroseconds(SYMBOL);
+    for (size_t i = 0; i < 8; ++i) {
+        setNextBufferBit(1);
+    }
 
     // Data: bits are sent one by one, starting with the MSB.
     for (byte i = 0; i < 56; i++)
     {
         if (((frame[i / 8] >> (7 - (i % 8))) & 1) == 1)
         {
-            digitalWrite(REMOTE_TX_PIN, LOW);
-            delayMicroseconds(SYMBOL);
-            // PORTD ^= 1<<5;
-            digitalWrite(REMOTE_TX_PIN, HIGH);
-            delayMicroseconds(SYMBOL);
+            setNextBufferBit(0);
+            setNextBufferBit(1);
         }
         else
         {
-            digitalWrite(REMOTE_TX_PIN, HIGH);
-            delayMicroseconds(SYMBOL);
-            // PORTD ^= 1<<5;
-            digitalWrite(REMOTE_TX_PIN, LOW);
-            delayMicroseconds(SYMBOL);
+            setNextBufferBit(1);
+            setNextBufferBit(0);
         }
     }
 
-    digitalWrite(REMOTE_TX_PIN, LOW);
-    delayMicroseconds(30415); // Inter-frame silence
+    // Inter-frame silence
+    for (size_t i = 0; i < 51; ++i) {
+        setNextBufferBit(0);
+    }
+
+    ELECHOUSE_cc1101.SendData(_buffer, _bufferBit / 8);
 }
 
 void SomfyRts::sendCommandUp()

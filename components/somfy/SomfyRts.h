@@ -2,6 +2,7 @@
 #define somfyrts_h
 #include <Arduino.h>
 #include <Preferences.h>
+#include <ELECHOUSE_CC1101_SRC_DRV.h>
 
 #define SYMBOL 640
 #define HAUT 0x2
@@ -18,10 +19,13 @@ private:
     bool _debug;
     uint32_t _remoteId;
     unsigned char _frame[7];
+    unsigned char _buffer[100];
+    unsigned int _bufferBit;
     char checksum;
     uint16_t rollingCode;
     uint16_t savedRollingCode;
     void _writeRemoteRollingCode(uint16_t code);
+    void setNextBufferBit(char state)
 
 public:
     SomfyRts(uint32_t remoteID, bool debug=false);

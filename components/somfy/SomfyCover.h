@@ -67,6 +67,8 @@ public:
 
         ELECHOUSE_cc1101.Init();
         ELECHOUSE_cc1101.setMHZ(433.42);
+        ELECHOUSE_cc1101.setModulation(2); // ASK/OOK
+        ELECHOUSE_cc1101.setDRate(1700.);  // Set the Data Rate in kBaud. Value from 0.02 to 1621.83.
     }
 
     // delete rolling code . 0....n
