@@ -10,18 +10,16 @@ CONF_REMOTEID_KEY = 'RemoteID'
 somfy_ns = cg.esphome_ns.namespace("somfy")
 SomfyCover = somfy_ns.class_("SomfyCover", cover.Cover, cg.Component)
 
-CONFIG_SCHEMA = cover.COVER_SCHEMA.extend(
+CONFIG_SCHEMA = cover.cover_schema(SomfyCover).extend(
     {
-        cv.GenerateID(): cv.declare_id(SomfyCover),
         cv.Required(CONF_REMOTEID_KEY): cv.int_,
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
 
 async def to_code(config):
-    var = cg.new_Pvariable(config[CONF_ID])
+    var = await cover.new_cover(config)
     await cg.register_component(var, config)
-    await cover.register_cover(var, config)
 
     cg.add(var.setCoverID(config[CONF_REMOTEID_KEY]))
     
