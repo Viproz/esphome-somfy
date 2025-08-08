@@ -60,6 +60,11 @@ public:
         ESP_LOGD("SomfyCover.h", "Somfy ESPHome Cover v1.00");
         ESP_LOGD("SomfyCover.h", "Initialize remote device");
 
+        // Open the preference memory to create the space if necessary
+        Preferences preferences;
+        preferences.begin("SomfyCover", false);
+        preferences.end();
+
         rtsDevice->init();
 
 
