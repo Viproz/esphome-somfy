@@ -115,6 +115,12 @@ public:
         // See the state
         byte state = status >> 4 & 0x7;
 
+        if(state == 2 && (status & 0x0F) < 10 && _bufferQueue.size() > (status & 0x0F)) {
+            // Everything going well, wait for enough room in the FIFO
+            delay(1);
+            return;
+        }
+
         if (_bufferQueue.size() > 0) {
             ESP_LOGD("SomfyCover.h", "Status: 0x%02X, bytes left: %d", status, _bufferQueue.size());
 
@@ -147,7 +153,7 @@ public:
                 _bufferQueue.pop();
             }
             byte resp = cc1101.SpiWriteBurstReg(CC1101_TXFIFO, _buffer, bytesToWrite);
-            ESP_LOGD("SomfyCover.h", "Written %d bytes to FIFO, resp 0x%02X", bytesToWrite, resp);
+            ESP_LOGD("SomfyCover.h", "Wrote %d bytes to FIFO, resp 0x%02X", bytesToWrite, resp);
 
             if (state == 7) {
                 // TX Underflow
@@ -165,6 +171,8 @@ public:
             cc1101.SpiStrobe(CC1101_SIDLE); // Exit RX / TX, turn off frequency synthesizer and exit
             cc1101.SpiStrobe(CC1101_SFTX);
         }
+
+        delay(5);
     }
 
     // delete rolling code . 0....n
@@ -252,33 +260,33 @@ public:
             switch (xpos)
             {
             case 0:
-                ESP_LOGD("SomfyCover.h", "Current rolling code is %d.", rtsDevice->readRemoteRollingCode());
+                ESP_LOGI("SomfyCover.h", "Current rolling code is %d.", rtsDevice->readRemoteRollingCode());
                 break;
 
             case 11:
-                ESP_LOGD("SomfyCover.h", "program mode");
+                ESP_LOGI("SomfyCover.h", "Program mode");
 
                 rtsDevice->sendCommandProg();
                 break;
 
             case 16:
-                ESP_LOGD("SomfyCover.h", "program mode - grail");
+                ESP_LOGI("SomfyCover.h", "Program mode - grail");
 
                 rtsDevice->sendCommandProgGrail();
                 break;
 
             case 21:
-                ESP_LOGD("SomfyCover.h", "delete file");
+                ESP_LOGI("SomfyCover.h", "Delete file");
                 delete_code();
                 break;
 
             case 50:
-                ESP_LOGD("SomfyCover.h", "long program mode");
+                ESP_LOGI("SomfyCover.h", "Long program mode");
                 rtsDevice->sendCommandProg(20);
                 break;
 
             case 61:
-                ESP_LOGD("SomfyCover.h", "Clearing all values in Preference library.");
+                ESP_LOGI("SomfyCover.h", "Clearing all values in Preference library");
 
                 nvs_flash_erase(); // erase the NVS partition and...
                 nvs_flash_init(); // initialize the NVS partition.
@@ -287,14 +295,14 @@ public:
                 if (success) {
                     ESP_LOGW("SomfyCover.h", "Begin success");
                 } else {
-                    ESP_LOGW("SomfyCover.h", "Begin fail");
+                    ESP_LOGI("SomfyCover.h", "Begin fail");
                 }
 
                 ret = preferences.putUShort("test", 20);
                 if (ret == 0) {
                     ESP_LOGW("SomfyCover.h", "Error while test-writing.");
                 } else {
-                    ESP_LOGW("SomfyCover.h", "Memory write success.");
+                    ESP_LOGI("SomfyCover.h", "Memory write success.");
                 }
 
                 preferences.end();
