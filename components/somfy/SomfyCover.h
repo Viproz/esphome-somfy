@@ -126,9 +126,13 @@ public:
             }
 
             if (bytesToWrite == 0) {
-                if (state != 2) {
+                if (state == 4) {
+                    // Chip is calibrating
+                    ESP_LOGD("SomfyCover.h", "Calibration in progress");
+                    delayMicroseconds(500);
+                } else if (state != 2) {
                     // Something very wrong happened, flush everything
-                    ESP_LOGD("SomfyCover.h", "Impossible case occured, flush FIFO");
+                    ESP_LOGD("SomfyCover.h", "Something wrong occured, CC1101 not in transmit but FIFO full, flush FIFO");
                     cc1101.SpiStrobe(CC1101_SIDLE);
                     cc1101.SpiStrobe(CC1101_SFTX);
                 }
