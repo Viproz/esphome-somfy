@@ -29,8 +29,15 @@ Using some cables or a PCB board connect the CC1101 to the ESP32 with the follow
 
 ## Usage:
 
-In your ESPHome installation create a new device, configure the different modules as you like and add the following lines at the end:
+In your ESPHome installation create a new device and choose ESP32, configure the different modules as you like and make sure the board configuration is correct, you need to have:
+````
+esp32:
+  board: esp32dev 
+  framework:
+    type: arduino
+````
 
+Now add the following lines at the end:
 ````
 external_components:
   - source:
@@ -51,6 +58,7 @@ cover:
     RemoteID: 2896
     device_class: shutter
 ````
+
 You can add as many cover elemnts as you would like, make sure all the RemoteID elements are unique.
 For additionnal security it is recommended to use random numbers for the remote IDs between 1 and 16777214, [you can generate them online](https://www.random.org/integers/?num=10&min=1&max=16777214&col=1&base=10&format=html&rnd=new).
 
