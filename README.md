@@ -5,7 +5,7 @@ Esphome configuration for Somfy RTS Blinds
 
 <img alt="Contributors" src="https://img.shields.io/github/contributors/Viproz/esphome-somfy"> <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Viproz/esphome-somfy">
 
-[**This product is available all assembled on Tindie!**](https://www.tindie.com/products/domotech/somfy-rts-remote-for-home-assistant-and-esphome/)
+<a href="https://lectronz.com/products/shutter-remote-rts" alt="I sell on Lectronz"><img src="https://lectronz-images.b-cdn.net/static/badges/i-sell-on-lectronz-medium.png" /></a>
 
 __Materials:__
 * 1 - [Wemos Mini D1](https://s.click.aliexpress.com/e/_DCIQhtB);
