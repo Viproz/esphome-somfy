@@ -239,7 +239,7 @@ void SomfyRts::sendCommandProgGrail()
 uint16_t SomfyRts::readRemoteRollingCode()
 {
     uint16_t code = 0;
-    Preferences preferences;
+    ::Preferences preferences;
     // Open the project namespace as read only
     preferences.begin("SomfyCover", true);
 
@@ -252,7 +252,7 @@ uint16_t SomfyRts::readRemoteRollingCode()
 
 void SomfyRts::_writeRemoteRollingCode(uint16_t code)
 {
-    Preferences preferences;
+    ::Preferences preferences;
     // Open the project namespace as read write
     preferences.begin("SomfyCover", false);
 

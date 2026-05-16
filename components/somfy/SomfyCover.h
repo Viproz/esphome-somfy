@@ -61,7 +61,7 @@ public:
         ESP_LOGD("SomfyCover.h", "Initialize remote device");
 
         // Open the preference memory to create the space if necessary
-        Preferences preferences;
+        ::Preferences preferences;
         preferences.begin("SomfyCover", false);
         preferences.end();
 
@@ -178,7 +178,7 @@ public:
     // delete rolling code . 0....n
     void delete_code()
     {
-        Preferences preferences;
+        ::Preferences preferences;
         preferences.begin("SomfyCover", false);
         const char* path = rtsDevice->getConfigFilename().c_str();
 
@@ -252,7 +252,7 @@ public:
             // Tilt is only for debug/programation
             auto tpos = *call.get_tilt();
             int xpos = tpos * 100;
-            Preferences preferences;
+            ::Preferences preferences;
             bool success;
             int ret;
             ESP_LOGI("SomfyCover.h", "Command tilt xpos: %d", xpos);
