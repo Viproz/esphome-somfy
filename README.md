@@ -46,7 +46,7 @@ external_components:
     components: [ somfy ]
     refresh: 1d
 preferences:
-  flash_write_interval: 0s
+  flash_write_interval: 1s
 
 cover:
   - platform: somfy
