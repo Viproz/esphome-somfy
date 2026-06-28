@@ -33,6 +33,7 @@ class SomfyCover : public Component, public cover::Cover
 private:
     int index;
     int remoteId = -1;
+    bool invert_ = false;
     unsigned char _buffer[64];
 
     SomfyRts* rtsDevice;
@@ -45,6 +46,11 @@ public:
     {
         index = coverID;
         remoteId = REMOTE_FIRST_ADDR + coverID;
+    }
+
+    void setInvert(bool invert)
+    {
+        invert_ = invert;
     }
 
     void setup() override
@@ -215,16 +221,18 @@ public:
 
             if (ppos == 0) {
                 ESP_LOGD("SomfyCover.h", "POS 0");
-                Serial.println("* Command Down");
+                Serial.println(invert_ ? "* Command Up (inverted)" : "* Command Down");
 
-                rtsDevice->sendCommandDown();
+                if (invert_) rtsDevice->sendCommandUp();
+                else         rtsDevice->sendCommandDown();
 
                 pos = 0.01;
             } else if (ppos == 100) {
                 ESP_LOGD("SomfyCover.h", "POS 100");
-                Serial.println("* Command UP");
+                Serial.println(invert_ ? "* Command Down (inverted)" : "* Command UP");
 
-                rtsDevice->sendCommandUp();
+                if (invert_) rtsDevice->sendCommandDown();
+                else         rtsDevice->sendCommandUp();
 
                 pos = 0.99;
             } else {

@@ -6,6 +6,7 @@ from esphome.const import (
 )
 
 CONF_REMOTEID_KEY = 'RemoteID'
+CONF_INVERT_KEY = 'invert'
 
 somfy_ns = cg.esphome_ns.namespace("somfy")
 SomfyCover = somfy_ns.class_("SomfyCover", cover.Cover, cg.Component)
@@ -13,6 +14,7 @@ SomfyCover = somfy_ns.class_("SomfyCover", cover.Cover, cg.Component)
 CONFIG_SCHEMA = cover.cover_schema(SomfyCover).extend(
     {
         cv.Required(CONF_REMOTEID_KEY): cv.int_,
+        cv.Optional(CONF_INVERT_KEY, default=False): cv.boolean, # type: ignore
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
@@ -22,6 +24,7 @@ async def to_code(config):
     await cg.register_component(var, config)
 
     cg.add(var.setCoverID(config[CONF_REMOTEID_KEY]))
+    cg.add(var.setInvert(config[CONF_INVERT_KEY]))
     
     cg.add_library("FS", None)
     cg.add_library("SPI", None)
