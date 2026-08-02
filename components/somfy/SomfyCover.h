@@ -132,7 +132,7 @@ public:
 
             int bytesToWrite = _min(_bufferQueue.size(), status & 0x0F);
 
-            if (status & 0x0F == 0x0F && state == 0) {
+            if ((status & 0x0F) == 0x0F && state == 0) {
                 // Start of transmission, TX FIFO is supposed to be empty transmit 64 bytes
                 bytesToWrite = _min(_bufferQueue.size(), 64);
             }
@@ -186,9 +186,9 @@ public:
     {
         ::Preferences preferences;
         preferences.begin("SomfyCover", false);
-        const char* path = rtsDevice->getConfigFilename().c_str();
+        String path = rtsDevice->getConfigFilename();
 
-        preferences.remove(path);
+        preferences.remove(path.c_str());
 
         ESP_LOGD("SomfyCover.h", "Deleted remote %i", remoteId);
         preferences.end();
